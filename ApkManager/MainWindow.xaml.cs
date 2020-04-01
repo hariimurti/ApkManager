@@ -1,28 +1,199 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ApkManager.Lib;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ApkManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
-        public MainWindow()
+        private Config cfg;
+        private Apk loadedApk;
+        private string pathApk;
+
+        #region WINDOW
+        public MainWindow(string pathApk = null)
         {
             InitializeComponent();
+
+            // make all flyout width same as root
+            foreach (Flyout flayout in Flyouts.Items)
+                flayout.Width = this.Width;
+            
+            cfg = new Config();
+            this.pathApk = pathApk;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // loading position
+            if (cfg.GetWindowPostition())
+            {
+                var position = cfg.WindowPostition();
+                if (position.Top!= 0 && position.Left != 0)
+                {
+                    WindowStartupLocation = WindowStartupLocation.Manual;
+                    this.Top = position.Top;
+                    this.Left = position.Left;
+                }
+            }
+
+            // loading switch settings
+            swHander.IsEnabled = App.IsAdministrator();
+            swHander.IsChecked = FileAssociation.IsDefault();
+            swInstance.IsChecked = cfg.SingleInstance();
+            swWindow.IsChecked = cfg.GetWindowPostition();
+
+            if (!string.IsNullOrWhiteSpace(pathApk))
+                txtPath.Text = pathApk;
+        }
+
+        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (cfg.GetWindowPostition())
+                cfg.WindowPostition(new WindowPosition() { Top = this.Top, Left = this.Left });
+        }
+
+        private void OnFileDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            var apk = files.Where(f => f.ToLower().EndsWith(".apk")).FirstOrDefault();
+
+            if (!string.IsNullOrWhiteSpace(apk))
+                txtPath.Text = apk;
+        }
+        #endregion
+
+        #region METHOD
+        private void ShowLoading(bool state = true)
+        {
+            Dispatcher.Invoke(() =>
+                PanelLoading.Visibility = state ? Visibility.Visible : Visibility.Collapsed
+            );
+        }
+        #endregion
+
+        private async void TxtPath_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(!(sender is TextBox tb)) return;
+
+            txtLabel.Text = ". . . .";
+            txtPackage.Text = ". . . .";
+            txtVersion.Text = ". . . .";
+            txtArch.Text = ". . . .";
+            txtArch.ToolTip = null;
+            txtSdk.Text = ". . . .";
+            imgIcon.Source = App.GetPlaystoreImageFromResources();
+            gbAction.IsEnabled = false;
+
+            if (string.IsNullOrWhiteSpace(tb.Text)) return;
+            if (loadedApk == null || loadedApk.FilePath != tb.Text)
+            {
+                ShowLoading();
+
+                var aapt = await Aapt.DumbBadging(tb.Text);
+                if (aapt.Success)
+                {
+                    loadedApk = aapt.Apk;
+                    txtLabel.Text = loadedApk.Label;
+                    txtPackage.Text = loadedApk.PackageName;
+                    txtVersion.Text = string.Format("{0} ( {1} )", loadedApk.VersionName, loadedApk.VersionCode);
+
+                    var foundOne = loadedApk.Platforms.Count <= 1;
+                    txtArch.Text = foundOne ? loadedApk.AbiList : "see list";
+                    txtArch.ToolTip = foundOne ? null : loadedApk.AbiList;
+                    txtArch.FontStyle = foundOne ? FontStyles.Normal : FontStyles.Italic;
+                    txtArch.Foreground = foundOne ? txtSdk.Foreground : Brushes.Blue;
+
+                    txtSdk.Text = loadedApk.SdkVersion.ToString();
+                    imgIcon.Source = loadedApk.Icon;
+                    gbAction.IsEnabled = true;
+                }
+                else
+                {
+                    txtLabel.Text = "file corrupt?";
+                    txtPackage.Text = "not an apk file?";
+                    txtVersion.Text = "???";
+                    txtArch.Text = "???";
+                    txtSdk.Text = "???";
+                }
+
+                ShowLoading(false);
+            }
+        }
+
+        private void FileOpen_Click(object sender, RoutedEventArgs e)
+        {
+            var open = new OpenFileDialog()
+            {
+                Title = "Select APK",
+                Filter = "Android Package|*.apk",
+                DefaultExt = "apk",
+                RestoreDirectory = true,
+                Multiselect = false
+            };
+
+            if (open.ShowDialog() == true)
+                txtPath.Text = open.FileName;
+        }
+
+        private void MenuSettings_Click(object sender, RoutedEventArgs e)
+        {
+            menuSettings.IsOpen = !menuSettings.IsOpen;
+        }
+
+        private void SwitchSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is ToggleSwitch ts)) return;
+            var tag = ts.Tag as string;
+            var isChecked = ts.IsChecked == true;
+            
+            if (tag == "Handler")
+                ts.IsChecked = FileAssociation.SetAsDefault(isChecked);
+            if (tag == "Instance")
+                cfg.SingleInstance(isChecked);
+            if (tag == "Window")
+                cfg.SetWindowPostition(isChecked);
+        }
+
+        private void ButtonReset_Click(object sender, RoutedEventArgs e)
+        {
+            txtPath.Text = string.Empty;
+        }
+
+        private async void ButtonRenamer_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var window = new RenamerWindow(loadedApk);
+                if (window.ShowDialog().Value == false) return;
+
+                var newdest = window.GetFileDestination();
+                File.Move(loadedApk.FilePath, newdest);
+                txtPath.Text = newdest;
+            }
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync("Renamer", ex.Message);
+            }
+        }
+
+        private void ButtonInstaller_Click(object sender, RoutedEventArgs e)
+        {
+            new AdbWindow(loadedApk).ShowDialog();
         }
     }
 }

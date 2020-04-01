@@ -1,0 +1,165 @@
+﻿<mah:MetroWindow x:Class="ApkManager.AdbWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:ico="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:ApkManager"
+        mc:Ignorable="d"
+        Title="ADB Manager" Icon="Resources/Android.ico" ShowIconOnTitleBar="False"
+        Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen"
+        Loaded="OnLoaded" Closing="OnClosing">
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button Click="WindowCommand_Click" Tag="reconnect" Name="wcReconnect">
+                <ico:PackIconMaterial Kind="PowerCycle" ToolTip="Restart ADB Server" />
+            </Button>
+            <Button Click="WindowCommand_Click" Tag="settings">
+                <ico:PackIconMaterial Kind="Settings" ToolTip="Settings" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl>
+            <mah:Flyout Name="menuSettings" Header="Settings" Position="Right">
+                <StackPanel Margin="10" VerticalAlignment="Center">
+                    <mah:ToggleSwitch Name="swClose" Tag="Close" Cursor="Hand" Click="SwitchSettings_Click"
+                                      OnLabel="Install Success : Auto Close" OffLabel="Install Success : Don't Close"/>
+                </StackPanel>
+            </mah:Flyout>
+            <mah:Flyout Name="menuWifi" Header="ADB WiFi" Position="Left" Theme="Adapt">
+                <StackPanel Margin="10" VerticalAlignment="Bottom">
+                    <GroupBox Header="Wifi Address" Padding="5">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Margin="5,0,0,0" Focusable="False" IsTabStop="False">
+                                <ico:PackIconMaterial Name="IconAddress" Kind="WifiOff"/>
+                            </Button>
+                            <TextBox Name="txtAddress" TextChanged="TextAddress_TextChanged" mah:TextBoxHelper.Watermark="192.168.1.4:5555" mah:TextBoxHelper.ClearTextButton="True"/>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Action" Margin="0,10,0,0" Padding="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Width="100" Content="CONNECT" Name="ButtonConnect" IsEnabled="False" IsDefault="True" Cursor="Hand" Click="ButtonConnect_Click"/>
+                            <Button Width="100" Content="DISCONNECT" Name="ButtonDisconnect" IsEnabled="False" Margin="8,0,0,0" Cursor="Hand" Click="ButtonDisconnect_Click"/>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
+    <Grid>
+        <StackPanel Name="PanelMain" Margin="10" Orientation="Vertical">
+            <GroupBox Header="Target Device" Name="gbTarget" Padding="5">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="35" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Text="Connected To :"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Device"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text=":"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text=". . . ." Padding="2,0,5,0"
+                                   Name="txtDevice" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Row="1" Grid.Column="3" Text="Arch"/>
+                        <TextBlock Grid.Row="1" Grid.Column="4" Text=":"/>
+                        <TextBlock Grid.Row="1" Grid.Column="5" Text=". . . ." Padding="2,0,0,0"
+                                   Name="txtArch" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Android"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text=":"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text=". . . ." Padding="2,0,5,0"
+                                   Name="txtAndroid" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Row="2" Grid.Column="3" Text="Sdk"/>
+                        <TextBlock Grid.Row="2" Grid.Column="4" Text=":"/>
+                        <TextBlock Grid.Row="2" Grid.Column="5" Text=". . . ." Padding="2,0,0,0"
+                                   Name="txtSdk" TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+                    <Button DockPanel.Dock="Right" Cursor="Hand" Click="ButtonWireless_Click">
+                        <ico:PackIconMaterial Kind="CellphoneWireless"/>
+                    </Button>
+                    <Button DockPanel.Dock="Right" Margin="0,0,5,0" Cursor="Hand" Click="ButtonRefresh_Click">
+                        <ico:PackIconMaterial Kind="Refresh"/>
+                    </Button>
+                    <ComboBox Margin="0,0,5,0" Name="cbDevices"
+                              SelectionChanged="ComboDevices_SelectionChanged"/>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="Command Output" Name="gbCommand" Height="100" Margin="0,10,0,0" Padding="5" Visibility="Collapsed">
+                <ListBox Name="lbOutput" Background="WhiteSmoke" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.Resources>
+                </ListBox>
+            </GroupBox>
+            <GroupBox Header="Select Action" Name="gbAction" Margin="0,10,0,0" Padding="5">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionMain">
+                        <Button Width="100" Name="btnMenuInstall" Cursor="Hand" Click="ButtonMenuInstall_Click" IsEnabled="False">
+                            <StackPanel Orientation="Horizontal">
+                                <ico:PackIconMaterial Kind="CellphoneArrowDown"/>
+                                <TextBlock Margin="5,0" Text="INSTALL"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Width="100" Margin="25,0,0,0" Cursor="Hand" Click="ButtonMenuUninstall_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ico:PackIconMaterial Kind="CellphoneErase"/>
+                                <TextBlock Margin="5,0" Text="UNINSTALL"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionInstall" Visibility="Collapsed">
+                        <Button Width="100" Margin="0,0,13,0" Cursor="Hand" Click="ButtonActionInstall_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ico:PackIconMaterial Kind="CellphoneArrowDown"/>
+                                <TextBlock Margin="5,0" Text="START"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Width="100" Margin="13,0,0,0" Cursor="Hand" Click="ButtonMenuBack_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ico:PackIconMaterial Kind="PagePrevious"/>
+                                <TextBlock Margin="5,0" Text="BACK"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionUninstall" Visibility="Collapsed">
+                        <Button Width="80" Cursor="Hand" Click="ButtonActionUninstall_Click">
+                            <StackPanel Orientation="Horizontal" ToolTip="Remove app and data">
+                                <ico:PackIconMaterial Kind="FileDocumentBoxRemove"/>
+                                <TextBlock Margin="5,0" Text="FULL"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Width="80" Margin="8,0,8,0" Cursor="Hand" Click="ButtonActionUninstallKeep_Click">
+                            <StackPanel Orientation="Horizontal" ToolTip="Remove app, keep the data">
+                                <ico:PackIconMaterial Kind="FileDocumentBoxCheck"/>
+                                <TextBlock Margin="5,0" Text="KEEP"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Width="80" Cursor="Hand" Click="ButtonMenuBack_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ico:PackIconMaterial Kind="PagePrevious"/>
+                                <TextBlock Margin="5,0" Text="BACK"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+        <Grid Name="PanelLoading" Visibility="Collapsed">
+            <Canvas Background="Black" Opacity="0.50"/>
+            <mah:ProgressRing Foreground="Yellow" />
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

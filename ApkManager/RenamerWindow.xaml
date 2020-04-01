@@ -1,0 +1,117 @@
+﻿<mah:MetroWindow x:Class="ApkManager.RenamerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:ico="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:ApkManager"
+        mc:Ignorable="d"
+        Title="File Renamer" Icon="Resources/Playstore.ico" ShowIconOnTitleBar="False"
+        Width="500" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen"
+        Loaded="OnLoaded">
+    <StackPanel Margin="10" Orientation="Vertical">
+        <GroupBox Header="1. Base Name" Padding="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" HorizontalAlignment="Center" Content="Label" Name="cbBaseLabel" Click="CheckBox_Click"/>
+                <CheckBox Grid.Column="1" HorizontalAlignment="Center" Content="Package" Name="cbBasePackage" Click="CheckBox_Click"/>
+                <CheckBox Grid.Column="2" HorizontalAlignment="Center" Content="Version" Name="cbBaseVersion" Click="CheckBox_Click"/>
+                <CheckBox Grid.Column="3" HorizontalAlignment="Center" Content="Build" Name="cbBaseBuild" Click="CheckBox_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="2. Suffix Tag" Margin="0,10,0,0" Padding="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" Content="Pro" Name="cbSuffixPro" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="0" Grid.Column="1" Content="Premium" Name="cbSuffixPremium" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="0" Grid.Column="2" Content="Paid" Name="cbSuffixPaid" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="0" Grid.Column="3" Content="Donate" Name="cbSuffixDonate" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="0" Grid.Column="4" Content="VIP" Name="cbSuffixVip" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="2" Grid.Column="0" Content="Full" Name="cbSuffixFull" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" Content="Patched" Name="cbSuffixPatched" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="2" Grid.Column="2" Content="Unlocked" Name="cbSuffixUnlocked" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="2" Grid.Column="3" Content="Final" Name="cbSuffixFinal" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="2" Grid.Column="4" Content="Beta" Name="cbSuffixBeta" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="4" Grid.Column="0" Content="Mod" Name="cbSuffixMod" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="4" Grid.Column="1" Content="AdFree" Name="cbSuffixAdFree" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="4" Grid.Column="2" Content="Lite" Name="cbSuffixLite" Click="CheckChanged_Click"/>
+                <CheckBox Grid.Row="4" Grid.Column="3" Content="Use [TAG] Format" Name="cbSuffixEnclosure" Click="CheckChanged_Click" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="3. Separator" Margin="0,10,0,0" Padding="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <RadioButton Grid.Column="0" HorizontalAlignment="Center" Content="Space" Name="rbSeparatorSpace" IsChecked="True" Click="CheckChanged_Click"/>
+                <RadioButton Grid.Column="1" HorizontalAlignment="Center" Content="Strip" Name="rbSeparatorStrip" Click="CheckChanged_Click"/>
+                <RadioButton Grid.Column="2" HorizontalAlignment="Center" Content="Undescore" Name="rbSeparatorUnderscore" Click="CheckChanged_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="4. Custom Pattern" Margin="0,10,0,0" Padding="5">
+            <StackPanel>
+                <TextBlock Text="Available Pattern : base, label, package, version, build, suffix."/>
+                <TextBlock Text="Example : %package%_v%version%-%suffix% » com.package_v1.2.3-Final" FontStyle="Italic" Margin="0,5,0,0" FontWeight="Light"/>
+                <TextBox Name="tbPattern" Margin="0,5,0,0" mah:TextBoxHelper.ClearTextButton="True" ContextMenu="{x:Null}" TextChanged="TbPattern_TextChanged" PreviewTextInput="TextBox_PreviewTextInput"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="5. Final Name" Margin="0,10,0,0" Padding="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="5" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBox Name="tbSource" Grid.ColumnSpan="2" IsReadOnly="True"/>
+                <ico:PackIconMaterial Kind="ArrowRight" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBox Name="tbDestination" Grid.ColumnSpan="2" Grid.Column="3" ContextMenu="{x:Null}" TextChanged="TbDestination_TextChanged" PreviewTextInput="TextBox_PreviewTextInput"/>
+                <Button Grid.Row="2" Width="100" Cursor="Hand" HorizontalAlignment="Left" Click="OnLoaded">
+                    <StackPanel Orientation="Horizontal">
+                        <ico:PackIconMaterial Kind="Refresh"/>
+                        <TextBlock Margin="5,0" Text="Reset"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Row="2" Grid.Column="3" Width="100" HorizontalAlignment="Left" Cursor="Hand" IsDefault="True" Name="btnRenamer" Click="ButtonRename_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <ico:PackIconMaterial Kind="RenameBox"/>
+                        <TextBlock Margin="5,0" Text="Rename"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Row="2" Grid.Column="4" Width="100" HorizontalAlignment="Right" Cursor="Hand" IsCancel="True">
+                    <StackPanel Orientation="Horizontal">
+                        <ico:PackIconMaterial Kind="PagePrevious"/>
+                        <TextBlock Margin="5,0" Text="Cancel"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
+</mah:MetroWindow>
