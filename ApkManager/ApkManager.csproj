@@ -77,6 +77,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Lib\Lib.cs" />
+    <Compile Include="Lib\PipeClient.cs" />
+    <Compile Include="Lib\PipeServer.cs" />
     <Compile Include="RenamerWindow.xaml.cs">
       <DependentUpon>RenamerWindow.xaml</DependentUpon>
     </Compile>

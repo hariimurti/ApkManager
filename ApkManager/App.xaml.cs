@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -16,17 +17,28 @@ namespace ApkManager
     /// </summary>
     public partial class App : Application
     {
+        public static readonly string PIPENAMESERVER = "{BB8C82B6-7851-46A0-A902-48446B59CAD6}";
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             var cfg = new Config();
-            using (var mutex = new Mutex(true, "{BB8C82B6-7851-46A0-A902-48446B59CAD6}", out bool isFirstInstance))
+            using (var mutex = new Mutex(true, PIPENAMESERVER, out bool isFirstInstance))
             {
-                if (!isFirstInstance && cfg.SingleInstance()) return;
+                // collect all args where apk & exist
+                var apks = e.Args.Where(s => s.ToLower().EndsWith(".apk") && File.Exists(s)).ToList();
+                if (apks.Count == 0) apks.Add("");
 
-                var apks = e.Args.Where(s => s.ToLower().EndsWith(".apk")).ToArray();
-
-                if (apks.Count() <= 1)
+                if (!isFirstInstance && cfg.SingleInstance())
+                {
+                    // send message to existed app
+                    new PipeClient(PIPENAMESERVER).SendMessage(apks.FirstOrDefault()).GetAwaiter();
+                    Current.Shutdown();
+                }
+                else
+                {
+                    // open main window with null or single apk
                     new MainWindow(apks.FirstOrDefault()).ShowDialog();
+                }
             }
         }
 

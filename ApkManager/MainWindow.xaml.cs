@@ -21,6 +21,7 @@ namespace ApkManager
         private Config cfg;
         private Apk loadedApk;
         private string pathApk;
+        public bool donotInterupt;
 
         #region WINDOW
         public MainWindow(string pathApk = null)
@@ -55,14 +56,35 @@ namespace ApkManager
             swInstance.IsChecked = cfg.SingleInstance();
             swWindow.IsChecked = cfg.GetWindowPostition();
 
+            // open apk passes arg not null
             if (!string.IsNullOrWhiteSpace(pathApk))
                 txtPath.Text = pathApk;
+
+            // start pip server if in one single instance
+            if (cfg.SingleInstance())
+            {
+                var server = new PipeServer(App.PIPENAMESERVER);
+                server.OnMessageReceived += OnMessageReceived;
+                server.StartListening();
+            }
         }
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (cfg.GetWindowPostition())
                 cfg.WindowPostition(new WindowPosition() { Top = this.Top, Left = this.Left });
+        }
+
+        private void OnMessageReceived(string message)
+        {
+            if (donotInterupt) return;
+
+            txtPath.Text = message;
+
+            if (this.WindowState == WindowState.Minimized)
+                this.WindowState = WindowState.Normal;
+
+            this.Activate();
         }
 
         private void OnFileDrop(object sender, DragEventArgs e)
@@ -178,6 +200,8 @@ namespace ApkManager
         {
             try
             {
+                donotInterupt = true;
+
                 var window = new RenamerWindow(loadedApk);
                 if (window.ShowDialog().Value == false) return;
 
@@ -189,11 +213,19 @@ namespace ApkManager
             {
                 await this.ShowMessageAsync("Renamer", ex.Message);
             }
+            finally
+            {
+                donotInterupt = false;
+            }
         }
 
         private void ButtonInstaller_Click(object sender, RoutedEventArgs e)
         {
+            donotInterupt = true;
+
             new AdbWindow(loadedApk).ShowDialog();
+
+            donotInterupt = false;
         }
     }
 }
