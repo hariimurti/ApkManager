@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:ApkManager"
         mc:Ignorable="d"
         Title="ADB Manager" Icon="Resources/Android.ico" ShowIconOnTitleBar="False"
-        Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen"
+        Width="350" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen"
         Loaded="OnLoaded" Closing="OnClosing">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -112,13 +112,13 @@
             <GroupBox Header="Select Action" Name="gbAction" Margin="0,10,0,0" Padding="5" IsEnabled="False">
                 <Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionMain">
-                        <Button Width="100" Name="btnMenuInstall" Cursor="Hand" Click="ButtonMenuInstall_Click">
+                        <Button Width="125" Name="btnMenuInstall" Cursor="Hand" Click="ButtonMenuInstall_Click">
                             <StackPanel Orientation="Horizontal">
                                 <ico:PackIconMaterial Kind="CellphoneArrowDown"/>
                                 <TextBlock Margin="5,0" Text="INSTALL"/>
                             </StackPanel>
                         </Button>
-                        <Button Width="100" Margin="25,0,0,0" Cursor="Hand" Click="ButtonMenuUninstall_Click">
+                        <Button Width="125" Margin="25,0,0,0" Cursor="Hand" Click="ButtonMenuUninstall_Click">
                             <StackPanel Orientation="Horizontal">
                                 <ico:PackIconMaterial Kind="CellphoneErase"/>
                                 <TextBlock Margin="5,0" Text="UNINSTALL"/>
@@ -126,13 +126,13 @@
                         </Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionInstall" Visibility="Collapsed">
-                        <Button Width="100" Margin="0,0,13,0" Cursor="Hand" Click="ButtonActionInstall_Click">
+                        <Button Width="125" Margin="0,0,13,0" Cursor="Hand" Click="ButtonActionInstall_Click">
                             <StackPanel Orientation="Horizontal">
                                 <ico:PackIconMaterial Kind="CellphoneArrowDown"/>
                                 <TextBlock Margin="5,0" Text="START"/>
                             </StackPanel>
                         </Button>
-                        <Button Width="100" Margin="13,0,0,0" Cursor="Hand" Click="ButtonMenuBack_Click">
+                        <Button Width="125" Margin="13,0,0,0" Cursor="Hand" Click="ButtonMenuBack_Click">
                             <StackPanel Orientation="Horizontal">
                                 <ico:PackIconMaterial Kind="PagePrevious"/>
                                 <TextBlock Margin="5,0" Text="BACK"/>
@@ -140,19 +140,19 @@
                         </Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionUninstall" Visibility="Collapsed">
-                        <Button Width="80" Cursor="Hand" Click="ButtonActionUninstall_Click">
+                        <Button Width="95" Cursor="Hand" Click="ButtonActionUninstall_Click">
                             <StackPanel Orientation="Horizontal" ToolTip="Remove app and data">
                                 <ico:PackIconMaterial Kind="FileDocumentBoxRemove"/>
                                 <TextBlock Margin="5,0" Text="FULL"/>
                             </StackPanel>
                         </Button>
-                        <Button Width="80" Margin="8,0,8,0" Cursor="Hand" Click="ButtonActionUninstallKeep_Click">
+                        <Button Width="95" Margin="10,0,10,0" Cursor="Hand" Click="ButtonActionUninstallKeep_Click">
                             <StackPanel Orientation="Horizontal" ToolTip="Remove app, keep the data">
                                 <ico:PackIconMaterial Kind="FileDocumentBoxCheck"/>
                                 <TextBlock Margin="5,0" Text="KEEP"/>
                             </StackPanel>
                         </Button>
-                        <Button Width="80" Cursor="Hand" Click="ButtonMenuBack_Click">
+                        <Button Width="95" Cursor="Hand" Click="ButtonMenuBack_Click">
                             <StackPanel Orientation="Horizontal">
                                 <ico:PackIconMaterial Kind="PagePrevious"/>
                                 <TextBlock Margin="5,0" Text="BACK"/>
