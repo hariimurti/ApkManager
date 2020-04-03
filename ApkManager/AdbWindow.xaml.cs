@@ -1,4 +1,4 @@
-using ApkManager.Lib;
+﻿using ApkManager.Lib;
 using MahApps.Metro.Controls;
 using System.ComponentModel;
 using System.IO;
@@ -32,6 +32,8 @@ namespace ApkManager
 
             // set switch in settings
             cfg = new Config();
+            swInstall.IsChecked = cfg.AutoInstall();
+            swUninstall.IsChecked = cfg.AutoUninstall();
             swClose.IsChecked = cfg.AutoClose();
 
             // define adb
@@ -63,7 +65,7 @@ namespace ApkManager
         }
         #endregion
 
-        #region TOPBAR
+        #region TOPBAR/FLAYOUT
         private async void WindowCommand_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button btn)) return;
@@ -84,6 +86,10 @@ namespace ApkManager
             if (!(sender is ToggleSwitch ts)) return;
 
             var tag = ts.Tag as string;
+            if (tag == "Install")
+                cfg.AutoInstall(ts.IsChecked == true);
+            if (tag == "Uninstall")
+                cfg.AutoUninstall(ts.IsChecked == true);
             if (tag == "Close")
                 cfg.AutoClose(ts.IsChecked == true);
         }
@@ -232,6 +238,9 @@ namespace ApkManager
                 gbTarget.IsEnabled = false;
                 gbAction.Header = "Action : Install";
                 gbCommand.Visibility = Visibility.Visible;
+
+                if (cfg.AutoInstall())
+                    ButtonActionInstall_Click(null, null);
             }
             else if (menu == ShowMenu.Uninstall)
             {
@@ -299,7 +308,9 @@ namespace ApkManager
             }
 
             CommandOutput_Insert("Force remove app and data....");
-            await adb.Uninstall(cbDevices.Text, apk.PackageName);
+            var result = await adb.Uninstall(cbDevices.Text, apk.PackageName);
+            if (result && cfg.AutoClose())
+                ShowActionMenu(ShowMenu.Main);
         }
 
         private async void ButtonActionUninstallKeep_Click(object sender, RoutedEventArgs e)
@@ -311,7 +322,9 @@ namespace ApkManager
             }
 
             CommandOutput_Insert("Remove app but keep the data....");
-            await adb.Uninstall(cbDevices.Text, apk.PackageName, true);
+            var result = await adb.Uninstall(cbDevices.Text, apk.PackageName, true);
+            if (result && cfg.AutoClose())
+                ShowActionMenu(ShowMenu.Main);
         }
         #endregion
     }

@@ -17,6 +17,8 @@ namespace ApkManager.Lib
         // Last used
         private static readonly string KEY_LASTADDRESS = "LastAddress";
         private static readonly string KEY_AUTOCLOSE = "AutoClose";
+        private static readonly string KEY_AUTOINSTALL = "AutoInstall";
+        private static readonly string KEY_AUTOUNINSTALL = "AutoUninstall";
         // Usage
         private static readonly string KEY_PATTERN = "UsePattern";
         private static readonly string KEY_LABEL = "UseLabel";
@@ -165,6 +167,26 @@ namespace ApkManager.Lib
         public bool AutoClose(bool value)
         {
             return SetValue(KEY_AUTOCLOSE, value);
+        }
+
+        public bool AutoInstall()
+        {
+            return GetBoolean(KEY_AUTOINSTALL);
+        }
+
+        public bool AutoInstall(bool value)
+        {
+            return SetValue(KEY_AUTOINSTALL, value);
+        }
+
+        public bool AutoUninstall()
+        {
+            return GetBoolean(KEY_AUTOUNINSTALL);
+        }
+
+        public bool AutoUninstall(bool value)
+        {
+            return SetValue(KEY_AUTOUNINSTALL, value);
         }
 
         public NameFormat GetNameFormat()
