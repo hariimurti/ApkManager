@@ -22,6 +22,7 @@ namespace ApkManager
             }
         }
 
+        private static bool OVERRIDE_ONREPORTEVENT = false;
         private static bool OVERRIDE_ONPROCESSEVENT = false;
 
         public delegate void ProcessEventHandler(bool value);
@@ -202,6 +203,25 @@ namespace ApkManager
             {
                 Debug.Print("Adb.Uninstall: {0}", e.Message);
                 return false;
+            }
+        }
+
+        public async Task<bool> IsDeviceOnline(string device)
+        {
+            try
+            {
+                OVERRIDE_ONREPORTEVENT = true;
+                var result = await RunAsync("-s {0} get-state", device);
+                return result.ToLower().Contains("device");
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Adb.Uninstall: {0}", e.Message);
+                return false;
+            }
+            finally
+            {
+                OVERRIDE_ONREPORTEVENT = true;
             }
         }
 

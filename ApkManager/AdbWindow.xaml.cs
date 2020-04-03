@@ -279,6 +279,12 @@ namespace ApkManager
 
         private async void ButtonActionInstall_Click(object sender, RoutedEventArgs e)
         {
+            if(!await adb.IsDeviceOnline(cbDevices.Text))
+            {
+                CommandOutput_Insert("target device is offline", true);
+                return;
+            }
+
             var result = await adb.Install(cbDevices.Text, apk.FilePath);
             if (result && cfg.AutoClose())
                 this.Close();
@@ -286,12 +292,24 @@ namespace ApkManager
 
         private async void ButtonActionUninstall_Click(object sender, RoutedEventArgs e)
         {
+            if (!await adb.IsDeviceOnline(cbDevices.Text))
+            {
+                CommandOutput_Insert("target device is offline", true);
+                return;
+            }
+
             CommandOutput_Insert("Force remove app and data....");
             await adb.Uninstall(cbDevices.Text, apk.PackageName);
         }
 
         private async void ButtonActionUninstallKeep_Click(object sender, RoutedEventArgs e)
         {
+            if (!await adb.IsDeviceOnline(cbDevices.Text))
+            {
+                CommandOutput_Insert("target device is offline", true);
+                return;
+            }
+
             CommandOutput_Insert("Remove app but keep the data....");
             await adb.Uninstall(cbDevices.Text, apk.PackageName, true);
         }
