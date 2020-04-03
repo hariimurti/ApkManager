@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -42,56 +42,55 @@ namespace ApkManager
 
         private async Task<string> RunAsync(string command, params object[] args)
         {
-            return await Task.Run(() =>
+            using (var p = new Process())
             {
-                using (var p = new Process())
-                {
-                    var OutputMessage = string.Empty;
-                    p.OutputDataReceived += (s, e) => {
-                        if (string.IsNullOrWhiteSpace(e.Data)) return;
-                        OutputMessage += e.Data + Environment.NewLine;
+                var OutputMessage = string.Empty;
+                p.OutputDataReceived += (s, e) => {
+                    if (string.IsNullOrWhiteSpace(e.Data)) return;
+                    OutputMessage += e.Data + Environment.NewLine;
+                    if (!OVERRIDE_ONREPORTEVENT)
                         OutputDataReceived?.Invoke(e.Data);
-                    };
-
-                    var ErrorMessage = string.Empty;
-                    p.ErrorDataReceived += (s, e) => {
-                        if (string.IsNullOrWhiteSpace(e.Data)) return;
-                        ErrorMessage += e.Data + Environment.NewLine;
-                        ErrorDataReceived?.Invoke(e.Data);
-                    };
-
-                    p.StartInfo = new ProcessStartInfo()
-                    {
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        FileName = Path.Combine("Lib", "adb.exe"),
-                        Arguments = string.Format(command, args)
-                    };
-
-                    p.Start();
-
-                    Debug.Print("Adb.Command: adb {0}", string.Format(command, args));
-
-                    if (!OVERRIDE_ONPROCESSEVENT)
-                        OnProcess?.Invoke(true);
-
-                    p.BeginOutputReadLine();
-                    p.BeginErrorReadLine();
-                    
-                    p.WaitForExit();
-
-                    if (!OVERRIDE_ONPROCESSEVENT)
-                        OnProcess?.Invoke(false);
-
-                    if (p.ExitCode != 0) throw new Exception(ErrorMessage);
-
-                    Debug.Print("Adb.Output: {0}", OutputMessage);
-                    return OutputMessage;
                 };
-            });
+
+                var ErrorMessage = string.Empty;
+                p.ErrorDataReceived += (s, e) => {
+                    if (string.IsNullOrWhiteSpace(e.Data)) return;
+                    ErrorMessage += e.Data + Environment.NewLine;
+                    if (!OVERRIDE_ONREPORTEVENT)
+                        ErrorDataReceived?.Invoke(e.Data);
+                };
+
+                p.StartInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = Path.Combine("Lib", "adb.exe"),
+                    Arguments = string.Format(command, args)
+                };
+
+                p.Start();
+
+                Debug.Print("Adb.Command: adb {0}", string.Format(command, args));
+
+                if (!OVERRIDE_ONPROCESSEVENT)
+                    OnProcess?.Invoke(true);
+
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
+                await Task.Run(() => p.WaitForExit());
+
+                if (!OVERRIDE_ONPROCESSEVENT)
+                    OnProcess?.Invoke(false);
+
+                if (p.ExitCode != 0) throw new Exception(ErrorMessage);
+
+                Debug.Print("Adb.Output: {0}", OutputMessage);
+                return OutputMessage;
+            };
         }
 
         public async Task<bool> StartServer()
@@ -208,8 +207,16 @@ namespace ApkManager
 
         public async Task<string> GetProp(string device, string prop)
         {
-            var result = await RunAsync("-s {0} shell getprop {1}", device, prop);
-            return string.IsNullOrWhiteSpace(result) ? "Unknown" : result.Trim();
+            try
+            {
+                var result = await RunAsync("-s {0} shell getprop {1}", device, prop);
+                return string.IsNullOrWhiteSpace(result) ? "Unknown" : result.Trim();
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Adb.Uninstall: {0}", e.Message);
+                return "Unknown";
+            }
         }
 
         public async Task<Device> GetDevice(string address)
