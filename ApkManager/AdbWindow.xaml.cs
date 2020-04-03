@@ -1,4 +1,4 @@
-﻿using ApkManager.Lib;
+using ApkManager.Lib;
 using MahApps.Metro.Controls;
 using System.ComponentModel;
 using System.IO;
@@ -99,7 +99,7 @@ namespace ApkManager
             txtAndroid.Text = ". . . .";
             txtArch.Text = ". . . .";
             txtSdk.Text = ". . . .";
-            btnMenuInstall.IsEnabled = false;
+            gbAction.IsEnabled = false;
 
             if (!string.IsNullOrWhiteSpace(address))
             {
@@ -111,6 +111,7 @@ namespace ApkManager
                 txtArch.Text = device.Arch;
                 txtSdk.Text = device.Sdk.ToString();
                 txtSdk.Foreground = supported ? txtArch.Foreground : Brushes.Red;
+                gbAction.IsEnabled = true;
                 btnMenuInstall.IsEnabled = supported;
             }
         }
