@@ -238,6 +238,7 @@ namespace ApkManager
                 gbTarget.IsEnabled = false;
                 gbAction.Header = "Action : Install";
                 gbCommand.Visibility = Visibility.Visible;
+                StartActionInstallMenu(true);
 
                 if (!cfg.AutoInstall()) return;
                 ButtonActionInstall_Click(null, null);
@@ -274,6 +275,20 @@ namespace ApkManager
             }
         }
 
+        private void StartActionInstallMenu(bool start)
+        {
+            if (start)
+            {
+                btnStartIcon.Kind = Kind.CellphoneArrowDown;
+                btnStartText.Text = "START";
+            }
+            else
+            {
+                btnStartIcon.Kind = Kind.Launch;
+                btnStartText.Text = "LAUNCH APP";
+            }
+        }
+
         private void ButtonMenuInstall_Click(object sender, RoutedEventArgs e)
         {
             ShowActionMenu(ShowMenu.Install);
@@ -297,9 +312,16 @@ namespace ApkManager
                 return;
             }
 
+            if (btnStartText.Text != "START")
+            {
+                await adb.LaunchActivity(cbDevices.Text, apk);
+                return;
+            }
+
             var result = await adb.Install(cbDevices.Text, apk.FilePath);
-            if (result && cfg.AutoClose())
-                this.Close();
+            if (!result) return;
+            if (cfg.AutoClose()) this.Close();
+            else StartActionInstallMenu(false);
         }
 
         private async void ButtonActionUninstall_Click(object sender, RoutedEventArgs e)

@@ -128,8 +128,8 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="actionInstall" Visibility="Collapsed">
                         <Button Width="125" Margin="0,0,13,0" Cursor="Hand" Click="ButtonActionInstall_Click">
                             <StackPanel Orientation="Horizontal">
-                                <ico:PackIconMaterial Kind="CellphoneArrowDown"/>
-                                <TextBlock Margin="5,0" Text="START"/>
+                                <ico:PackIconMaterial Name="btnStartIcon" Kind="CellphoneArrowDown"/>
+                                <TextBlock Margin="5,0" Name="btnStartText" Text="START"/>
                             </StackPanel>
                         </Button>
                         <Button Width="125" Margin="13,0,0,0" Cursor="Hand" Click="ButtonMenuBack_Click">

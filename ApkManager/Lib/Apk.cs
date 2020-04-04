@@ -16,6 +16,7 @@ namespace ApkManager.Lib
         public IList<string> Platforms { get; set; }
         public string AbiList { get; set; }
         public string FilePath { get; set; }
+        public string LaunchableActivity { get; set; }
 
         public Apk()
         {

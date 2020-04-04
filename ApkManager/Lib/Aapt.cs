@@ -163,6 +163,13 @@ namespace ApkManager.Lib
                 apk.Platforms.Add("any");
             }
 
+            //launchable-activity
+            match = Regex.Match(output, "launchable-activity: name='(.+?)'");
+            if (match.Success)
+            {
+                apk.LaunchableActivity = match.Groups[1].Value;
+            }
+
             return new Result()
             {
                 Apk = apk,

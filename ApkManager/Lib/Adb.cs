@@ -1,3 +1,4 @@
+﻿using ApkManager.Lib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -222,6 +223,20 @@ namespace ApkManager
             finally
             {
                 OVERRIDE_ONREPORTEVENT = false;
+            }
+        }
+
+        public async Task<bool> LaunchActivity(string device, Apk apk)
+        {
+            try
+            {
+                var result = await RunAsync("-s {0} shell am start -n \"{1}/{2}\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER", device, apk.PackageName, apk.LaunchableActivity);
+                return result.ToLower().Contains("error");
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Adb.LunchActivity: {0}", e.Message);
+                return false;
             }
         }
 
