@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -216,12 +216,12 @@ namespace ApkManager
             }
             catch (Exception e)
             {
-                Debug.Print("Adb.Uninstall: {0}", e.Message);
+                Debug.Print("Adb.IsDeviceOnline: {0}", e.Message);
                 return false;
             }
             finally
             {
-                OVERRIDE_ONREPORTEVENT = true;
+                OVERRIDE_ONREPORTEVENT = false;
             }
         }
 

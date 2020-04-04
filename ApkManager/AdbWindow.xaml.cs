@@ -239,8 +239,8 @@ namespace ApkManager
                 gbAction.Header = "Action : Install";
                 gbCommand.Visibility = Visibility.Visible;
 
-                if (cfg.AutoInstall())
-                    ButtonActionInstall_Click(null, null);
+                if (!cfg.AutoInstall()) return;
+                ButtonActionInstall_Click(null, null);
             }
             else if (menu == ShowMenu.Uninstall)
             {
@@ -256,6 +256,9 @@ namespace ApkManager
                 gbTarget.IsEnabled = false;
                 gbAction.Header = "Action : Uninstall";
                 gbCommand.Visibility = Visibility.Visible;
+
+                if (!cfg.AutoUninstall()) return;
+                ButtonActionUninstall_Click(null, null);
             }
             else
             {
