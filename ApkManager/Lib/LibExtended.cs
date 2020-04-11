@@ -27,9 +27,11 @@ namespace ApkManager.Lib
             return mtext && !mlabel;
         }
 
-        public static string Append(this string text, string appendtext)
+        public static string Append(this string text, string appendtext, bool space = true)
         {
             var separator = string.IsNullOrWhiteSpace(text) ? "" : " ";
+            if (!space) separator = "";
+
             return string.Concat(text, separator, appendtext).Trim();
         }
 

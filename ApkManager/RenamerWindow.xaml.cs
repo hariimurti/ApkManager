@@ -150,14 +150,28 @@ namespace ApkManager
             if (cbSuffixBeta.IsChecked == true)
                 namesuffix = namesuffix.Append("Beta");
 
-            // suffix final
-            if (cbSuffixEnclosure.IsChecked == true)
+            // suffix enclosure
+            var useEnclosure = cbSuffixEnclosure.IsChecked == true;
+            if (useEnclosure)
             {
                 namesuffix = Regex.Replace(namesuffix, "(\\w+)", delegate (Match match) {
                     return string.Format("[{0}]", match.Groups[1].Value);
                 }).Replace(" ","");
             }
-            else
+
+            // suffix abi
+            var filename = Path.GetFileName(apk.FilePath);
+            if (filename.IsMatch("armeabi-v7a"))
+                namesuffix = namesuffix.Append(useEnclosure ? "[armeabi-v7a]" : "armeabi-v7a", !useEnclosure);
+            if (filename.IsMatch("arm64-v8a"))
+                namesuffix = namesuffix.Append(useEnclosure ? "[arm64-v8a]" : "arm64-v8a", !useEnclosure);
+            if (filename.IsMatch("x86_x64"))
+                namesuffix = namesuffix.Append(useEnclosure ? "[x86_x64]" : "x86_x64", !useEnclosure);
+            else if (filename.IsMatch("x86"))
+                namesuffix = namesuffix.Append(useEnclosure ? "[x86]" : "x86", !useEnclosure);
+
+            // suffix final
+            if (!useEnclosure)
             {
                 if (rbSeparatorStrip.IsChecked == true)
                     namesuffix = namesuffix.Replace(" ", "-");
