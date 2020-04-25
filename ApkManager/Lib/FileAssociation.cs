@@ -24,7 +24,7 @@ namespace ApkManager
                     {
                         key.SetValue("", APK_DESCRIPTION);
                         key.CreateSubKey("DefaultIcon").SetValue("", $"\"{ExePath}\"");
-                        key.CreateSubKey("Shell\\Open\\Command").SetValue("", $"\"{ExePath}\" /i \"%1\"");
+                        key.CreateSubKey("Shell\\Open\\Command").SetValue("", $"\"{ExePath}\" \"%1\"");
                     }
                 }
                 else

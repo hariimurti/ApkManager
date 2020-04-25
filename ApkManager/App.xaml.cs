@@ -21,25 +21,24 @@ namespace ApkManager
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var cfg = new Config();
-            using (var mutex = new Mutex(true, PIPENAMESERVER, out bool isFirstInstance))
-            {
-                // collect all args where apk & exist
-                var apks = e.Args.Where(s => s.ToLower().EndsWith(".apk") && File.Exists(s)).ToList();
-                if (apks.Count == 0) apks.Add("");
-
-                if (!isFirstInstance && cfg.SingleInstance())
+            // collect all args where apk & exist
+            var apks = e.Args.Where(s => s.ToLower().EndsWith(".apk") && File.Exists(s)).ToList();
+            if (new Config().SingleInstance())
+                using (var mutex = new Mutex(true, PIPENAMESERVER, out bool isFirstInstance))
                 {
-                    // send message to existed app
-                    new PipeClient(PIPENAMESERVER).SendMessage(apks.FirstOrDefault()).GetAwaiter();
-                    Current.Shutdown();
+                    if (isFirstInstance)
+                    {
+                        // open main window with null or single apk
+                        new MainWindow(apks.FirstOrDefault()).ShowDialog();
+                    }
+                    else
+                    {
+                        // send message to existed app
+                        new PipeClient(PIPENAMESERVER).SendMessage(apks.FirstOrDefault()).GetAwaiter();
+                        Current.Shutdown();
+                    }
                 }
-                else
-                {
-                    // open main window with null or single apk
-                    new MainWindow(apks.FirstOrDefault()).ShowDialog();
-                }
-            }
+            else new MainWindow(apks.FirstOrDefault()).Show();
         }
 
         public static bool IsAdministrator()
