@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -88,7 +88,7 @@ namespace ApkManager.Lib
 
         public static async Task<Result> DumbBadging(string pathApk)
         {
-            var output = string.Empty;
+            string output;
 
             try
             {
@@ -111,7 +111,7 @@ namespace ApkManager.Lib
             if (match.Success) apk.PackageName = match.Groups[1].Value;
 
             //versionCode
-            match = Regex.Match(output, "package.+versionCode='(.+?)'");
+            match = Regex.Match(output, "package.+ versionCode='(.+?)'");
             if (match.Success)
             {
                 double.TryParse(match.Groups[1].Value, out double versionCode);
@@ -119,15 +119,15 @@ namespace ApkManager.Lib
             }
 
             //versionName
-            match = Regex.Match(output, "package.+versionName='(.+?)'");
+            match = Regex.Match(output, "package.+ versionName='(.+?)'");
             if (match.Success) apk.VersionName = match.Groups[1].Value;
 
             //label
-            match = Regex.Match(output, "application.+label='(.+?)'");
+            match = Regex.Match(output, "application: label='(.+?)'");
             if (match.Success) apk.Label = match.Groups[1].Value;
 
             //icon
-            match = Regex.Match(output, "application.+icon='(.+?)'");
+            match = Regex.Match(output, "application.+ icon='(.+?)'");
             if (match.Success) apk.Icon = GetIconFrom(pathApk, match.Groups[1].Value);
 
             //sdkVersion
@@ -151,16 +151,16 @@ namespace ApkManager.Lib
             foreach (Match m in matches) apk.Permissions.Add(m.Groups[1].Value);
 
             //native-code
-            match = Regex.Match(output, "native-code: '(.+)'");
+            match = Regex.Match(output, "native-code: '([^:=]+)'");
             if (match.Success)
             {
                 apk.AbiList = match.Groups[1].Value.Replace("' '",", ");
-                apk.Platforms = match.Groups[1].Value.Replace("' '", " ").Split(' ').ToList();
+                apk.Platforms = match.Groups[1].Value.Replace("' '"," ").Split(' ').ToList();
             }
             else
             {
-                apk.AbiList = "any";
-                apk.Platforms.Add("any");
+                apk.AbiList = "any-cpu";
+                apk.Platforms.Add("any-cpu");
             }
 
             //launchable-activity
