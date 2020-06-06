@@ -25,17 +25,17 @@ namespace ApkManager.Lib
                 using (var stream = new MemoryStream())
                 using (var zip = ZipStorer.Open(pathApk, FileAccess.Read))
                 {
-                    if (!pathIcon.EndsWith(".xml"))
+                    ZipStorer.ZipFileEntry fileEntry = null;
+                    if (pathIcon.EndsWith(".xml"))
                     {
-                        var fileEntry = zip.ReadCentralDir().Where(f => f.FilenameInZip.Equals(pathIcon)).SingleOrDefault();
-                        zip.ExtractFile(fileEntry, stream);
-                    }
-                    else
-                    {
+                        // try finding png icon from xml path
                         var icon = Path.GetFileNameWithoutExtension(pathIcon) + ".png";
-                        var fileEntry = zip.ReadCentralDir().Where(f => f.FilenameInZip.EndsWith(icon) && f.FilenameInZip.Contains("hdpi")).LastOrDefault();
-                        zip.ExtractFile(fileEntry, stream);
+                        fileEntry = zip.ReadCentralDir().Where(f => f.FilenameInZip.EndsWith(icon) && f.FilenameInZip.Contains("hdpi")).LastOrDefault();
                     }
+                    else fileEntry = zip.ReadCentralDir().Where(f => f.FilenameInZip.Equals(pathIcon)).FirstOrDefault();
+
+                    if (fileEntry != null) zip.ExtractFile(fileEntry, stream);
+                    else throw new Exception("there is no png icon in the apk");
 
                     var bitmap = new BitmapImage();
                     bitmap.BeginInit();
