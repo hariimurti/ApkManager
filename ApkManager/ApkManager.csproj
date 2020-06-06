@@ -142,7 +142,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\aapt2.exe">
+    <Content Include="Lib\aapt.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Lib\adb.exe">

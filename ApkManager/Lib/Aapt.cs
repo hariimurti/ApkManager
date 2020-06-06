@@ -67,7 +67,7 @@ namespace ApkManager.Lib
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         WindowStyle = ProcessWindowStyle.Hidden,
-                        FileName = Path.Combine("Lib", "aapt2.exe"),
+                        FileName = Path.Combine("Lib", "aapt.exe"),
                         Arguments = string.Format(command, args)
                     };
 
