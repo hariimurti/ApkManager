@@ -110,15 +110,20 @@ namespace ApkManager
             if (!string.IsNullOrWhiteSpace(address))
             {
                 var device = await adb.GetDevice(address);
-                var supported = apk.SdkVersion <= device.Sdk;
+                var isArchSupported = apk.AbiList.Equals("any-cpu") || apk.Platforms.Contains(device.Arch) ||
+                    (apk.AbiList.Equals("armeabi") && device.Arch.StartsWith("arm"));
+                var isSdkSupported = apk.SdkVersion <= device.Sdk;
 
                 txtDevice.Text = device.Name;
                 txtAndroid.Text = device.Android;
                 txtArch.Text = device.Arch;
+                txtArch.Foreground = isArchSupported ? txtArch.Foreground : Brushes.Red;
+                txtArch.ToolTip = isArchSupported ? null : "not compatible";
                 txtSdk.Text = device.Sdk.ToString();
-                txtSdk.Foreground = supported ? txtArch.Foreground : Brushes.Red;
+                txtSdk.Foreground = isSdkSupported ? txtArch.Foreground : Brushes.Red;
+                txtSdk.ToolTip = isSdkSupported ? null : "not compatible";
                 gbAction.IsEnabled = true;
-                btnMenuInstall.IsEnabled = supported;
+                btnMenuInstall.IsEnabled = isArchSupported && isSdkSupported;
             }
         }
 
