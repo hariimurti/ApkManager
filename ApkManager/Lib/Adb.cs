@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApkManager
 {
-    internal class Adb
+    public class Adb
     {
         public class Device
         {

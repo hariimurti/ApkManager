@@ -23,5 +23,37 @@ namespace ApkManager.Lib
             Permissions = new List<string>();
             Platforms = new List<string>();
         }
+
+        public bool isAbiCompatible(Adb.Device device)
+        {
+            if (AbiList == "any-cpu") return true;
+
+            if (device.Arch == "armeabi-v7a")
+            {
+                return AbiList.Contains("armeabi");
+            }
+
+            if (device.Arch == "arm64-v8a")
+            {
+                return AbiList.Contains("arm");
+            }
+
+            if (device.Arch == "x86_64")
+            {
+                return AbiList.Contains("x86");
+            }
+
+            return AbiList.Contains(device.Arch);
+        }
+
+        public bool isSdkCompatible(Adb.Device device)
+        {
+            return SdkVersion <= device.Sdk;
+        }
+
+        public bool canInstallTo(Adb.Device device)
+        {
+            return isAbiCompatible(device) && isSdkCompatible(device);
+        }
     }
 }
