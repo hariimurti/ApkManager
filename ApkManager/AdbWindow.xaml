@@ -76,7 +76,7 @@
                         <TextBlock Grid.Row="1" Grid.Column="1" Text=":"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text=". . . ." Padding="2,0,5,0"
                                    Name="txtDevice" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Grid.Row="1" Grid.Column="3" Text="Arch"/>
+                        <TextBlock Grid.Row="1" Grid.Column="3" Text="ABI"/>
                         <TextBlock Grid.Row="1" Grid.Column="4" Text=":"/>
                         <TextBlock Grid.Row="1" Grid.Column="5" Text=". . . ." Padding="2,0,0,0"
                                    Name="txtArch" TextTrimming="CharacterEllipsis"/>
@@ -84,7 +84,7 @@
                         <TextBlock Grid.Row="2" Grid.Column="1" Text=":"/>
                         <TextBlock Grid.Row="2" Grid.Column="2" Text=". . . ." Padding="2,0,5,0"
                                    Name="txtAndroid" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Grid.Row="2" Grid.Column="3" Text="Sdk"/>
+                        <TextBlock Grid.Row="2" Grid.Column="3" Text="SDK"/>
                         <TextBlock Grid.Row="2" Grid.Column="4" Text=":"/>
                         <TextBlock Grid.Row="2" Grid.Column="5" Text=". . . ." Padding="2,0,0,0"
                                    Name="txtSdk" TextTrimming="CharacterEllipsis"/>

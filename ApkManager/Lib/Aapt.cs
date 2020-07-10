@@ -152,16 +152,7 @@ namespace ApkManager.Lib
 
             //native-code
             match = Regex.Match(output, "native-code: '([^:=]+)'");
-            if (match.Success)
-            {
-                apk.AbiList = match.Groups[1].Value.Replace("' '",", ");
-                apk.Platforms = match.Groups[1].Value.Replace("' '"," ").Split(' ').ToList();
-            }
-            else
-            {
-                apk.AbiList = "any-cpu";
-                apk.Platforms.Add("any-cpu");
-            }
+            apk.AbiList = match.Success ? match.Groups[1].Value.Replace("' '", ", ") : "Unknown";
 
             //launchable-activity
             match = Regex.Match(output, "launchable-activity: name='(.+?)'");

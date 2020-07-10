@@ -100,7 +100,7 @@
                         <TextBlock Grid.Row="2" Grid.Column="1" Text=":" VerticalAlignment="Center"/>
                         <TextBlock Grid.Row="2" Grid.Column="2" Text=". . . ."
                                    Name="txtVersion" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Arch" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="ABI" VerticalAlignment="Center"/>
                         <TextBlock Grid.Row="3" Grid.Column="1" Text=":" VerticalAlignment="Center"/>
                         <Grid Grid.Row="3" Grid.Column="2">
                             <Grid.ColumnDefinitions>
@@ -109,7 +109,7 @@
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text=". . . ." Name="txtArch" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock Grid.Column="0" Text=". . . ." Name="txtAbi" VerticalAlignment="Center" Margin="0,0,10,0" />
                             <TextBlock Grid.Column="1" Text="SDK" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="2" Text=":" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="3" Text=". . . ." Name="txtSdk" VerticalAlignment="Center"/>

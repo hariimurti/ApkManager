@@ -115,7 +115,7 @@ namespace ApkManager
 
                 txtDevice.Text = device.Name;
                 txtAndroid.Text = device.Android;
-                txtArch.Text = device.Arch;
+                txtArch.Text = device.Abi;
                 txtArch.Foreground = isArchCompatible ? txtArch.Foreground : Brushes.Red;
                 txtArch.ToolTip = isArchCompatible ? null : "not compatible";
                 txtSdk.Text = device.Sdk.ToString();

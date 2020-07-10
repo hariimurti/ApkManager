@@ -13,7 +13,6 @@ namespace ApkManager.Lib
         public int TargetSdkVersion { get; set; }
         public BitmapImage Icon { get; set; }
         public IList<string> Permissions { get; set; }
-        public IList<string> Platforms { get; set; }
         public string AbiList { get; set; }
         public string FilePath { get; set; }
         public string LaunchableActivity { get; set; }
@@ -21,34 +20,33 @@ namespace ApkManager.Lib
         public Apk()
         {
             Permissions = new List<string>();
-            Platforms = new List<string>();
         }
 
         public bool isAbiCompatible(Adb.Device device)
         {
-            if (AbiList == "any-cpu") return true;
+            if (AbiList == "Unknown" || device.Abi == "Unknown") return true;
 
-            if (device.Arch == "armeabi-v7a")
+            if (device.Abi == "armeabi-v7a")
             {
                 return AbiList.Contains("armeabi");
             }
 
-            if (device.Arch == "arm64-v8a")
+            if (device.Abi == "arm64-v8a")
             {
                 return AbiList.Contains("arm");
             }
 
-            if (device.Arch == "x86_64")
+            if (device.Abi == "x86_64")
             {
                 return AbiList.Contains("x86");
             }
 
-            return AbiList.Contains(device.Arch);
+            return AbiList.Contains(device.Abi);
         }
 
         public bool isSdkCompatible(Adb.Device device)
         {
-            return SdkVersion <= device.Sdk;
+            return SdkVersion <= device.Sdk || device.Sdk == 0;
         }
 
         public bool canInstallTo(Adb.Device device)

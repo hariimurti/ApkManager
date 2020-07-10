@@ -115,8 +115,8 @@ namespace ApkManager
             txtLabel.Text = ". . . .";
             txtPackage.Text = ". . . .";
             txtVersion.Text = ". . . .";
-            txtArch.Text = ". . . .";
-            txtArch.ToolTip = null;
+            txtAbi.Text = ". . . .";
+            txtAbi.ToolTip = null;
             txtSdk.Text = ". . . .";
             imgIcon.Source = App.GetPlaystoreImageFromResources();
             gbAction.IsEnabled = false;
@@ -134,11 +134,11 @@ namespace ApkManager
                     txtPackage.Text = loadedApk.PackageName;
                     txtVersion.Text = string.Format("{0} ( {1} )", loadedApk.VersionName, loadedApk.VersionCode);
 
-                    var foundOne = loadedApk.Platforms.Count <= 1;
-                    txtArch.Text = foundOne ? loadedApk.AbiList : "see list";
-                    txtArch.ToolTip = foundOne ? null : loadedApk.AbiList;
-                    txtArch.FontStyle = foundOne ? FontStyles.Normal : FontStyles.Italic;
-                    txtArch.Foreground = foundOne ? txtSdk.Foreground : Brushes.Blue;
+                    var foundOne = !loadedApk.AbiList.Contains(",");
+                    txtAbi.Text = foundOne ? loadedApk.AbiList : "see list";
+                    txtAbi.ToolTip = foundOne ? null : loadedApk.AbiList;
+                    txtAbi.FontStyle = foundOne ? FontStyles.Normal : FontStyles.Italic;
+                    txtAbi.Foreground = foundOne ? txtSdk.Foreground : Brushes.Blue;
 
                     txtSdk.Text = loadedApk.SdkVersion.ToString();
                     imgIcon.Source = loadedApk.Icon;
@@ -149,7 +149,7 @@ namespace ApkManager
                     txtLabel.Text = "file corrupt?";
                     txtPackage.Text = "not an apk file?";
                     txtVersion.Text = "???";
-                    txtArch.Text = "???";
+                    txtAbi.Text = "???";
                     txtSdk.Text = "???";
                 }
 

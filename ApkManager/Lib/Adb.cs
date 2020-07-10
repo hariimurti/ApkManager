@@ -14,7 +14,7 @@ namespace ApkManager
         {
             public string Name { get; set; }
             public string Android { get; set; }
-            public string Arch { get; set; }
+            public string Abi { get; set; }
             public int Sdk { get; set; }
 
             public override string ToString()
@@ -274,7 +274,7 @@ namespace ApkManager
             var sdk = await GetProp(address, "ro.build.version.sdk");
             int.TryParse(sdk, out int _sdk);
 
-            var arch = await GetProp(address, "ro.product.cpu.abi");
+            var _abi = await GetProp(address, "ro.product.cpu.abi");
 
             OnProcess?.Invoke(false);
             OVERRIDE_ONPROCESSEVENT = false;
@@ -284,7 +284,7 @@ namespace ApkManager
                 Name = name,
                 Android = android,
                 Sdk = _sdk,
-                Arch = arch
+                Abi = _abi
             };
         }
     }
