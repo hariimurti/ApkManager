@@ -123,7 +123,7 @@ namespace ApkManager.Lib
             if (match.Success) apk.VersionName = match.Groups[1].Value;
 
             //label
-            match = Regex.Match(output, "application: label='(.+?)'");
+            match = Regex.Match(output, "application: label='(.+?)' icon");
             if (match.Success) apk.Label = match.Groups[1].Value;
 
             //icon
