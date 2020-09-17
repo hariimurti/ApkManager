@@ -64,7 +64,7 @@ namespace ApkManager
                     if (regValue == null)
                         return false;
 
-                    if (regValue.ToString() != $"\"{ExePath}\" /i \"%1\"")
+                    if (regValue.ToString() != $"\"{ExePath}\" \"%1\"")
                         return false;
                 }
 
