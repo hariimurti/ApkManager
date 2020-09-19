@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -66,6 +67,8 @@ namespace ApkManager.Lib
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8,
                         WindowStyle = ProcessWindowStyle.Hidden,
                         FileName = Path.Combine("Lib", "aapt.exe"),
                         Arguments = string.Format(command, args)
