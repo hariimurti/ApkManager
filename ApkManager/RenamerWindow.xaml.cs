@@ -161,9 +161,9 @@ namespace ApkManager
 
             // suffix abi
             var filename = Path.GetFileName(apk.FilePath);
-            if (filename.IsMatch("armeabi-v7a"))
+            if (filename.IsMatch("armeabi"))
                 namesuffix = namesuffix.Append(useEnclosure ? "[armeabi-v7a]" : "armeabi-v7a", !useEnclosure);
-            if (filename.IsMatch("arm64-v8a"))
+            if (filename.IsMatch("arm64"))
                 namesuffix = namesuffix.Append(useEnclosure ? "[arm64-v8a]" : "arm64-v8a", !useEnclosure);
             if (filename.IsMatch("x86_x64"))
                 namesuffix = namesuffix.Append(useEnclosure ? "[x86_x64]" : "x86_x64", !useEnclosure);
