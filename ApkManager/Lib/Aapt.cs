@@ -95,7 +95,7 @@ namespace ApkManager.Lib
 
             try
             {
-                output = await RunAsync("dump badging \"{0}\"", pathApk);
+                output = await RunAsync("dump badging \"{0}\"", pathApk.GetShortPathName());
             }
             catch (Exception e)
             {

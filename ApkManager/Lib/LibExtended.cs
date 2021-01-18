@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ApkManager.Lib
@@ -50,6 +52,20 @@ namespace ApkManager.Lib
                     if (f == i) text = text.Replace(f.ToString(), "");
 
             return text.Trim();
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern int GetShortPathName(
+                [MarshalAs(UnmanagedType.LPTStr)] string path,
+                [MarshalAs(UnmanagedType.LPTStr)] StringBuilder shortPath,
+                int shortPathLength
+            );
+
+        public static string GetShortPathName(this string path)
+        {
+            var shortPath = new StringBuilder(255);
+            var result = GetShortPathName(path, shortPath, shortPath.Capacity);
+            return (result == 0) ? path : shortPath.ToString();
         }
     }
 }

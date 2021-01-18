@@ -182,7 +182,7 @@ namespace ApkManager
         {
             try
             {
-                var result = await RunAsync("-s {0} install -r \"{1}\"", device, pathApk);
+                var result = await RunAsync("-s {0} install -r \"{1}\"", device, pathApk.GetShortPathName());
                 return result.Contains("Success");
             }
             catch (Exception e)
