@@ -113,8 +113,11 @@ namespace ApkManager
             if(!(sender is TextBox tb)) return;
 
             txtLabel.Text = ". . . .";
+            txtLabel.ToolTip = null;
             txtPackage.Text = ". . . .";
+            txtPackage.ToolTip = null;
             txtVersion.Text = ". . . .";
+            txtVersion.ToolTip = null;
             txtAbi.Text = ". . . .";
             txtAbi.ToolTip = null;
             txtSdk.Text = ". . . .";
@@ -130,27 +133,29 @@ namespace ApkManager
                 if (aapt.Success)
                 {
                     loadedApk = aapt.Apk;
-                    txtLabel.Text = loadedApk.Label;
-                    txtPackage.Text = loadedApk.PackageName;
-                    txtVersion.Text = string.Format("{0} ( {1} )", loadedApk.VersionName, loadedApk.VersionCode);
 
-                    var foundOne = !loadedApk.AbiList.Contains(",");
-                    txtAbi.Text = foundOne ? loadedApk.AbiList : "see list";
-                    txtAbi.ToolTip = foundOne ? null : loadedApk.AbiList;
-                    txtAbi.FontStyle = foundOne ? FontStyles.Normal : FontStyles.Italic;
-                    txtAbi.Foreground = foundOne ? txtSdk.Foreground : Brushes.Blue;
+                    txtLabel.Text = loadedApk.Label;
+                    txtLabel.ToolTip = txtLabel.Text;
+
+                    txtPackage.Text = loadedApk.PackageName;
+                    txtPackage.ToolTip = txtPackage.Text;
+
+                    txtVersion.Text = string.Format("{0} ( {1} )", loadedApk.VersionName, loadedApk.VersionCode);
+                    txtVersion.ToolTip = txtVersion.Text;
+
+                    txtAbi.Text = loadedApk.AbiList;
+                    txtAbi.ToolTip = txtAbi.Text;
 
                     txtSdk.Text = loadedApk.SdkVersion.ToString();
+
                     imgIcon.Source = loadedApk.Icon;
                     gbAction.IsEnabled = true;
                 }
+                // file corrupt or error
                 else
                 {
                     txtLabel.Text = "file corrupt?";
-                    txtPackage.Text = "not an apk file?";
-                    txtVersion.Text = "???";
-                    txtAbi.Text = "???";
-                    txtSdk.Text = "???";
+                    txtPackage.Text = "not an apk file? unusual file path?";
                 }
 
                 ShowLoading(false);

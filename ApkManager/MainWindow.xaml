@@ -109,10 +109,12 @@
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text=". . . ." Name="txtAbi" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock Grid.Column="0" Text=". . . ." Name="txtAbi" TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center" Margin="0,0,10,0" />
                             <TextBlock Grid.Column="1" Text="SDK" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="2" Text=":" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text=". . . ." Name="txtSdk" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text=". . . ." Name="txtSdk" TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center"/>
                         </Grid>
                     </Grid>
                 </DockPanel>
