@@ -14,7 +14,7 @@ namespace ApkManager.Lib
         public delegate void MessageEventHander(string message);
         public event MessageEventHander OnMessageReceived;
 
-        NamedPipeServerStream server;
+        private static NamedPipeServerStream server;
         private string pipename;
 
         public PipeServer(string pipename)
@@ -25,22 +25,25 @@ namespace ApkManager.Lib
         public async void StartListening()
         {
             if (server != null) return;
-            server = new NamedPipeServerStream(pipename);
-
-            while(true)
+            while (true)
             {
                 try
                 {
+                    if (server == null)
+                    {
+                        server = new NamedPipeServerStream(pipename);
+                    }
                     await Task.Run(() => server.WaitForConnection());
                     using (var sr = new StreamReader(server))
                     {
                         OnMessageReceived?.Invoke(sr.ReadLine());
                     }
-                    server?.Disconnect();
+                    //server?.Disconnect();
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-                    break;
+                    Debug.Print("PipeServer: {0}", ex.Message);
+                    //break;
                 }
                 finally
                 {
