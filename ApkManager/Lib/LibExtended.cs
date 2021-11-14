@@ -11,7 +11,7 @@ namespace ApkManager.Lib
     {
         public static bool IsValidIPAddress(this string text)
         {
-            return Regex.IsMatch(text, @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{4})?$");
+            return Regex.IsMatch(text, @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{1,5})?$");
         }
 
         public static bool IsMatch(this string text, string pattern)
